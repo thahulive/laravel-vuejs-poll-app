@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Poll extends Model
+class Vote extends Model
 {
     /**
      * The attributes that are mass assignable.
@@ -12,7 +12,7 @@ class Poll extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'title', 'description', 'type'
+        'user_id', 'option_id'
     ];
 
     public function user()
@@ -20,14 +20,8 @@ class Poll extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    public function options()
+    public function poll()
     {
-        return $this->hasMany('App\Models\Option');
+        return $this->belongsTo('App\Models\Poll');
     }
-
-    public function optionRequests()
-    {
-        return $this->hasMany('App\Models\Option_request');
-    }
-
 }
