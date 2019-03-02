@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePollsTable extends Migration
+class CreateVotesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,17 @@ class CreatePollsTable extends Migration
      */
     public function up()
     {
-        Schema::create('polls', function (Blueprint $table) {
+        Schema::create('votes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user_id');
-            $table->text('title');
-            $table->text('description')->nullable();
-            $table->enum('type', ['single', 'multi'])->default('single');
+            $table->bigInteger('option_id');
             $table->timestamps();
 
             $table->foreign('user_id')
                     ->references('id')->on('users')
+                    ->onDelete('cascade');
+            $table->foreign('option_id')
+                    ->references('id')->on('options')
                     ->onDelete('cascade');
         });
     }
@@ -34,6 +35,6 @@ class CreatePollsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('polls');
+        Schema::dropIfExists('votes');
     }
 }
