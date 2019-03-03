@@ -25,9 +25,14 @@ class Poll extends Model
         return $this->hasMany('App\Models\Option');
     }
 
+    public function votes()
+    {
+        return $this->hasManyThrough('App\Models\Vote', 'App\Models\Option');
+    }
+
     public function optionRequests()
     {
-        return $this->hasMany('App\Models\Option_request');
+        return $this->hasMany('App\Models\OptionRequest');
     }
 
 }

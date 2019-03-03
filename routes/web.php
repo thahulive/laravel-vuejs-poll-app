@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,10 +12,32 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+
+
+Route::group(['middleware' => ['auth']], function () {
+    
+    // Return auth user data
+    Route::get('/me', function (Request $request) {
+        return \Response::json([
+            'data' => \Auth::user()
+        ], 200);
+    });
+
+    Route::get('/polls', 'PollController@index');
+    Route::get('/polls/{poll}', 'PollController@show');
+    Route::post('/polls/{poll}/vote', 'PollController@vote');
+    Route::post('/polls/create', 'PollController@store');
+    Route::put('/polls/{poll}', 'PollController@saveOptions');
+    Route::put('/polls/{poll}/suggestion', 'OptionRequestController@store');
+
+    Route::get('/{any}', function () {
+        return view('poll-app');
+    })->where('any', '.*');
+});
+

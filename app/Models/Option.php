@@ -19,4 +19,8 @@ class Option extends Model
     {
         return $this->belongsTo('App\Models\Poll');
     }
+    public function votes()
+    {
+        return $this->hasMany('App\Models\Vote');
+    }
 }
