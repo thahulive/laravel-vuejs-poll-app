@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Auth;
 use App\Models\Poll;
 use App\Models\Vote;
+use App\Models\OptionRequest;
 use Illuminate\Http\Request;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\PollResource;
@@ -20,25 +21,6 @@ class OptionRequestController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -72,49 +54,23 @@ class OptionRequestController extends Controller
             ], 201);
         }
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\OptionRequest  $optionRequest
-     * @return \Illuminate\Http\Response
-     */
-    public function show(OptionRequest $optionRequest)
+    public function approveOption(Request $request, Poll $poll)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\OptionRequest  $optionRequest
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(OptionRequest $optionRequest)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\OptionRequest  $optionRequest
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, OptionRequest $optionRequest)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\OptionRequest  $optionRequest
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(OptionRequest $optionRequest)
-    {
-        //
+        try {
+            $option = OptionRequest::find($request->get('option'));
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+     
+        if($poll->options()->create([
+            'option' => $option->option
+        ])) {
+            $option->delete();
+            return \Response::json([
+                'code' => 201,
+                'message' => 'approved',
+                'data' => new PollResource($poll)
+            ], 201);
+        }
     }
 }
