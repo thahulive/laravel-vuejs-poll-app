@@ -82,10 +82,14 @@ export default {
             this.isLoading = true
             let res = await this.$store.dispatch('suggestOptions', this.options)
             if(res == 'created'){
+                this.showdialogue = false
                 this.isLoading = false
                 this.options = [{ option: '' }]
-            }else
+            }else {
+                this.showdialogue = false
                 this.isLoading = false
+            }
+                
         },
     }
 

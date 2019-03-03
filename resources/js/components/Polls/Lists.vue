@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-container>
-            <v-layout row wrap>
+            <v-layout row wrap v-if="polls.length > 0">
                 <v-flex>
                     <h1 class="text-xs-left display-1" style="max-width:40%">
                         Polls
@@ -14,11 +14,19 @@
                     ></v-pagination>
                 </v-flex>
             </v-layout>
+            <v-layout v-else align-center justify-center row fill-height  style="height:90vh">
+                <v-flex>
+                    <h1 class="text-xs-center font-weight-thin display-3 grey--text text--darken-1">
+                        No polls yet. Please Add one
+                    </h1>
+                </v-flex>
+            </v-layout>
         </v-container>
         
         <v-container
             fluid
             grid-list-lg
+            v-if="polls.length > 0"
         >
             <v-layout row wrap>
                 <v-flex xs16 md3 v-for="poll in polls" :key="poll.id">

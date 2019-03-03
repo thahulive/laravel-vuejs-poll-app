@@ -4,7 +4,7 @@ export default {
     poll: {
         title: '',
         description: '',
-        mode: 'single'
+        type: 'single'
     },
     pagination: {}
 }

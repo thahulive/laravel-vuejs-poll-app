@@ -34,7 +34,7 @@ Vue.use(VueChartkick, {adapter: Chart})
 
 import PollLists from './components/Polls/Lists.vue';
 import SingleView from './components/Polls/SingleView.vue';
-import CreatePoll from './components/Polls/CreatePoll.vue';
+import CreateEditPoll from './components/Polls/CreateEditPoll.vue';
 
 const router = new VueRouter({
     mode: 'history',
@@ -47,12 +47,12 @@ const router = new VueRouter({
         {
             path: '/create',
             name: 'create-poll',
-            component: CreatePoll
+            component: CreateEditPoll
         },
         {
             path: '/poll/:id/edit',
             name: 'edit-poll',
-            component: CreatePoll
+            component: CreateEditPoll
         },
         {
             path: '/poll/:id',

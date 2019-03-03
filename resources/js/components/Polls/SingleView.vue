@@ -24,7 +24,7 @@
                                     <v-checkbox v-model="votes" :key="option.id" :label="option.option" :value="option.id"></v-checkbox>
                                 </template>
                             </template>
-                            <v-list v-if="poll.option_requests.length > 0 && poll.isMyPoll">
+                            <v-list v-if="viewOptionRequests">
                                 <v-subheader>Option Suggestions</v-subheader>
                                 <v-list-tile
                                     v-for="option in poll.option_requests"
@@ -36,7 +36,7 @@
                                     </v-list-tile-content>
 
                                     <v-list-tile-action>
-                                        <v-icon :color="option.status == 'requested' ? 'teal' : 'grey'">done</v-icon>
+                                        <v-icon :color="option.status == 'requested' ? 'teal' : 'grey'" @click="approveOption(option)">done</v-icon>
                                     </v-list-tile-action>
                                 </v-list-tile>
                             </v-list>
@@ -48,7 +48,8 @@
                                 {{ myVotesCount > 0 ? 'Vote again' : 'Vote'}}
                             </v-btn> 
                             <template v-if="poll.isMyPoll">
-                                <v-btn flat color="red" :to="`/poll/${poll.id}/edit`">Edit</v-btn>
+                                <v-btn flat color="orange" :to="`/poll/${poll.id}/edit`">Edit</v-btn>
+                                <v-btn flat color="red" @click="deleteConfirm = true">Delete</v-btn>
                             </template>
                             <template  v-else>
                                 <OptionRequest/>
@@ -98,7 +99,34 @@
             >
                 Close
             </v-btn>
-            </v-snackbar>
+        </v-snackbar>
+        <v-dialog
+            v-model="deleteConfirm"
+            max-width="400"
+            >
+            <v-card>
+                <v-card-title class="headline">This action will delete this poll</v-card-title>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+
+                    <v-btn
+                        color="green darken-1"
+                        flat="flat"
+                        @click="deleteConfirm = false"
+                    >
+                        Disagree
+                    </v-btn>
+
+                    <v-btn
+                        color="green darken-1"
+                        flat="flat"
+                        @click="deletePoll"
+                    >
+                        Agree
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+            </v-dialog>
     </v-container>
 </template>
 
@@ -111,6 +139,7 @@ export default {
     },
     data() {
         return {
+            deleteConfirm: false,
             message: '',
             snackbar: false,
             votes: [],
@@ -118,6 +147,11 @@ export default {
         }
     },
     computed: {
+        viewOptionRequests() {
+            if(typeof this.poll.option_requests !== 'undefined' && this.poll.option_requests.length > 0 && this.poll.isMyPoll)
+                return true
+            return false
+        },
         poll() {
             return this.$store.getters.poll
         },
@@ -160,6 +194,14 @@ export default {
                 this.snackbar = true
                 this.votes = []
             }
+        },
+        async deletePoll() {
+            let res = await this.$store.dispatch('deletePoll', this.$route.params.id)
+            if(res == 'deleted')
+                this.$router.push({'path': '/'})
+        },
+        async approveOption(option) {
+            let res = await this.$store.dispatch('approveOption', option.id)
         }
     },
     mounted() {

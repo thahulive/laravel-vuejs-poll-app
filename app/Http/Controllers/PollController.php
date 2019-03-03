@@ -67,7 +67,7 @@ class PollController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|min:6'
+            'title' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -142,7 +142,46 @@ class PollController extends Controller
      */
     public function update(Request $request, Poll $poll)
     {
-        //
+        
+        try {
+            $updation = $request->all();
+            $changes = false;
+
+            if($poll->title !== $updation['title']) {
+                $changes = true;
+                $poll->title = $updation['title'];
+            }
+                
+            if($poll->description !== $updation['description']) {
+                $changes = true;
+                $poll->description = $updation['description'];
+            }
+                
+            if($poll->type !== $updation['type']) {
+                $changes = true;
+                $poll->type = $updation['type'];
+            }
+
+            if($changes)
+                if($poll->save()) {
+                    return \Response::json([
+                        'code' => 201,
+                        'message' => 'updated',
+                        'data' => new PollResource($poll)
+                    ], 201);
+                }
+                
+        } catch (\Throwable $th) {
+            return \Response::json([
+                'code' => 200,
+                'errors' => 'unknown',
+                'message' => $th->getMessage(),
+            ], 200);
+        }
+        return \Response::json([
+            'code' => 201,
+            'message' => 'not updated'
+        ], 201);
     }
 
     /**
@@ -153,6 +192,19 @@ class PollController extends Controller
      */
     public function destroy(Poll $poll)
     {
-        //
+        try {
+            if($poll->delete())
+                return \Response::json([
+                    'code' => 200,
+                    'message' => 'deleted'
+                ], 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+        return \Response::json([
+            'code' => 201,
+            'message' => 'unknown'
+        ], 201);
+        
     }
 }

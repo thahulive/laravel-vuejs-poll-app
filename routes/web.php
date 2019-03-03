@@ -35,6 +35,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/polls/create', 'PollController@store');
     Route::put('/polls/{poll}', 'PollController@saveOptions');
     Route::put('/polls/{poll}/suggestion', 'OptionRequestController@store');
+    Route::put('/polls/{poll}/approve', 'OptionRequestController@approveOption');
+    Route::patch('/polls/{poll}/edit', 'PollController@update');
+    Route::delete('/polls/{poll}', 'PollController@destroy');
 
     Route::get('/{any}', function () {
         return view('poll-app');

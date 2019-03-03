@@ -11,7 +11,7 @@ export default {
             state.poll = {
                 title: '',
                 description: '',
-                mode: 'single'
+                type: 'single'
             }
             return
         }
@@ -24,7 +24,7 @@ export default {
         state.poll.description = description
     },
     POLL_MODE(state, mode) {
-        state.poll.mode = mode
+        state.poll.type = mode
     },
     POLL_OPTIONS(state, options) {
         state.poll.options = options

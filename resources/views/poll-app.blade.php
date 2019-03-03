@@ -28,8 +28,12 @@
                 <v-spacer></v-spacer>
                 <v-toolbar-items class="hidden-sm-and-down">
                     <v-btn flat to="/">Home</v-btn>
-                    <v-btn flat>Link Two</v-btn>
                     <v-btn flat to="/create">Create</v-btn>
+                    <v-btn flat onclick="event.preventDefault();
+                        document.getElementById('logout-form').submit();">Log Out</v-btn>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
                 </v-toolbar-items>
             </v-toolbar>
             <v-content>

@@ -8,13 +8,29 @@ export default {
             commit('USER', user.data.data)
             return 
         }
-        this.$router.push({'path': '/login'})
     },
     async createNewPoll({commit, state}) {
         let newPoll = await axios.post('/polls/create', state.poll)
         if(newPoll.status == 201) {
             commit('POLL', newPoll.data.data)
             return 'created'
+        }
+        return 'error'
+    },
+    async updatePoll({commit, state}) {
+        let updatePoll = await axios.patch(`/polls/${state.poll.id}/edit`, state.poll)
+        if(updatePoll.status == 201) {
+            if(updatePoll.data.message == 'updated')
+                commit('POLL', updatePoll.data.data)
+            return 'updated'
+        }
+        return 'error'
+    },
+    async deletePoll({commit, state}, payload) {
+        let res = await axios.delete(`/polls/${payload}`)
+        if(res.status == 200) {
+            if(res.data.message == 'deleted')
+                return res.data.message
         }
         return 'error'
     },
@@ -31,6 +47,16 @@ export default {
     async suggestOptions({commit, state}, payload) {
         let options = await axios.put(`/polls/${state.poll.id}/suggestion`, {
             options: payload
+        })
+        if(options.status == 201) {
+            commit('POLL', options.data.data)
+            return 'created'
+        }
+        return 'error'
+    },
+    async approveOption({commit, state}, payload) {
+        let options = await axios.put(`/polls/${state.poll.id}/approve`, {
+            option: payload
         })
         if(options.status == 201) {
             commit('POLL', options.data.data)
